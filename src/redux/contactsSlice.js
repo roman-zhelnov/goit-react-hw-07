@@ -13,18 +13,12 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
         state.items = action.payload;
       })
       .addCase(deleteContact.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
         state.items = state.items.filter((item) => item.id !== action.payload);
       })
       .addCase(addContact.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
         state.items.push(action.payload);
       })
       .addMatcher(
@@ -32,22 +26,33 @@ const slice = createSlice({
           fetchContacts.pending,
           deleteContact.pending,
           addContact.pending,
-          (state) => {
+          (state, action) => {
             state.loading = true;
           }
         )
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.fulfilled,
+          deleteContact.fulfilled,
+          addContact.fulfilled,
+          (state, action) => {
+            state.loading = false;
+            state.error = null;
+          }
+        )
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.rejected,
+          deleteContact.rejected,
+          addContact.rejected,
+          (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          }
+        )
       );
-    // .addMatcher(
-    //   isAnyOf(
-    //     fetchContacts.rejected,
-    //     deleteContact.rejected,
-    //     addContact.rejected,
-    //     (state, action) => {
-    //       state.loading = false;
-    //       state.error = action.payload;
-    //     }
-    //   )
-    // );
   },
 });
 
