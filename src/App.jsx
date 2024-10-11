@@ -14,14 +14,15 @@ function App() {
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
+
   return (
     <>
       <h1>PhoneBook</h1>
       <ContactForm />
       <SearchBox />
       {isLoading && <h2>Loading... </h2>}
-      <ContactList />
       {isError && <h2>Something went wrong. Please, try again!</h2>}
+      <ContactList />
     </>
   );
 }
